@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "1.9.23"
 }
 
-group = "paviko.opencode"
+group = "goals.opencode"
 version = "26.5.13"
 
 val guiOnly = project.findProperty("guiOnly")?.toString()?.toBoolean() ?: false
@@ -154,7 +154,7 @@ tasks {
         untilBuild.set("261.*")
 
         if (guiOnly) {
-            pluginId.set("paviko.opencode-ux-plus-gui-only")
+            pluginId.set("goals.opencode-ux-plus-gui-only")
             pluginName.set("OpenCode UX+ GUI Only (unofficial)")
         }
     }
