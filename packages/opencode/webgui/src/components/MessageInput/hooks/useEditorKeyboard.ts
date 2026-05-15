@@ -10,12 +10,12 @@ interface UseEditorKeyboardOptions {
 }
 
 export function useEditorKeyboard({ editor, contentEditableRef, parseWithRange, onSubmit }: UseEditorKeyboardOptions) {
-  // Register Cmd/Ctrl+Enter command
+  // Register Enter command
   useEffect(() => {
     return editor.registerCommand(
       KEY_ENTER_COMMAND,
       (event) => {
-        if ((event?.metaKey || event?.ctrlKey) && event.key === "Enter") {
+        if (event?.key === "Enter" && !event.shiftKey) {
           event?.preventDefault()
           onSubmit()
           return true

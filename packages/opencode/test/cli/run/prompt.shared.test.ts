@@ -27,7 +27,7 @@ const keybinds = {
   historyNext: bindings("down"),
   inputClear: bindings("ctrl+c"),
   inputSubmit: bindings("return"),
-  inputNewline: bindings("shift+return,ctrl+return,alt+return,ctrl+j"),
+  inputNewline: bindings("shift+return"),
 }
 
 function prompt(text: string, parts: RunPrompt["parts"] = []): RunPrompt {
