@@ -5,6 +5,7 @@ import fs from "fs"
 import path from "path"
 import { fileURLToPath } from "url"
 import { createSolidTransformPlugin } from "@opentui/solid/bun-plugin"
+import { platform, arch } from "process";
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -12,7 +13,7 @@ const dir = path.resolve(__dirname, "..")
 
 process.chdir(dir)
 
-await import("./generate.ts")
+await import("./generate.ts");
 
 import { Script } from "@opencode-ai/script"
 import pkg from "../package.json"
@@ -128,8 +129,6 @@ const targets = singleFlag
       return true
     })
   : allTargets
-
-await $`rm -rf dist`
 
 const binaries: Record<string, string> = {}
 if (!skipInstall) {
