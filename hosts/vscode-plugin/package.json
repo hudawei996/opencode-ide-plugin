@@ -1,21 +1,21 @@
 {
   "name": "opencode-ux-plus",
-  "displayName": "OpenCode UX+ (unofficial)",
+  "displayName": "OpenCode UX+ (unofficial) updates",
   "description": "Unofficial OpenCode VSCode extension",
   "version": "26.5.13",
-  "publisher": "paviko",
+  "publisher": "goals",
   "author": {
-    "name": "paviko"
+    "name": "goals"
   },
   "license": "MIT",
-  "homepage": "https://github.com/paviko/opencode-ide-plugin",
+  "homepage": "https://github.com/hudawei996/opencode-ide-plugin",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paviko/opencode-ide-plugin.git",
+    "url": "https://github.com/hudawei996/opencode-ide-plugin.git",
     "directory": "hosts/vscode-plugin"
   },
   "bugs": {
-    "url": "https://github.com/paviko/opencode-ide-plugin/issues"
+    "url": "https://github.com/hudawei996/opencode-ide-plugin/issues"
   },
   "engines": {
     "vscode": "^1.74.0"
