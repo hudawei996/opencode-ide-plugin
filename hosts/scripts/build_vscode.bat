@@ -130,6 +130,10 @@ if "%SKIP_BINARIES%"=="false" (
             cd /d "%ROOT_DIR%"
             if exist "hosts\scripts\build_opencode.bat" (
                 call hosts\scripts\build_opencode.bat
+                if errorlevel 1 (
+                    echo [ERROR] Backend binary build failed.
+                    exit /b 1
+                )
             ) else (
                 echo [ERROR] Backend build script not found at hosts\scripts\build_opencode.bat
                 exit /b 1
@@ -288,7 +292,10 @@ REM Move binaries completely outside the plugin tree so vsce cannot bundle them
 set "BIN_STASH=%TEMP%\opencode_bin_stash_%RANDOM%"
 if exist "resources\bin" (
     mkdir "%BIN_STASH%"
-    move "resources\bin" "%BIN_STASH%\bin" >nul
+    robocopy "resources\bin" "%BIN_STASH%\bin" /E /MOV >nul
+    if errorlevel 8 (
+        echo [WARN] Failed to stash binaries; will rely on .vscodeignore exclusion
+    )
 )
 
 REM Temporarily swap package.json with gui-only overrides and .vscodeignore
@@ -305,6 +312,11 @@ if errorlevel 1 (
 
 REM Swap .vscodeignore
 copy "%PLUGIN_DIR%\.vscodeignore.gui-only" "%PLUGIN_DIR%\.vscodeignore" >nul
+if errorlevel 1 (
+    echo [ERROR] Failed to swap .vscodeignore
+    call :gui_only_cleanup
+    exit /b 1
+)
 
 REM Package gui-only variant
 if "%BUILD_TYPE%"=="production" (
