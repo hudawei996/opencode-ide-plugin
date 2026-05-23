@@ -1,7 +1,8 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
-rem Build opencode for multiple platforms and place binaries plus webgui-dist in both JetBrains and VSCode plugin resources.
+rem Build opencode for the current platform and place binary plus webgui-dist
+rem in both JetBrains and VSCode plugin resources.
 
 pushd "%~dp0\..\.."
 set "ROOT_DIR=%CD%"
@@ -32,9 +33,9 @@ if not defined OPENCODE_VERSION (
   for /f "delims=" %%V in ('node -p "require('%OPENCODE_DIR:\=/%/package.json').version"') do set "OPENCODE_VERSION=%%V"
 )
 
-echo => Building webgui-dist
+echo ^> Building webgui-dist
 pushd "%WEBGUI_DIR%"
-bun run build
+cmd /c "bun run build"
 if errorlevel 1 (
   popd
   exit /b 1
@@ -46,20 +47,16 @@ if not exist "%WEBGUI_DIST%" (
   exit /b 1
 )
 
-echo => Building opencode distribution (version %OPENCODE_VERSION%)
+echo ^> Building opencode distribution (version %OPENCODE_VERSION%)
 pushd "%OPENCODE_DIR%"
-bun script/build.ts
+cmd /c "bun script/build.ts --single"
 if errorlevel 1 (
   popd
   exit /b 1
 )
 popd
 
-if not exist "%DIST_DIR%" (
-  echo Error: expected dist directory not found at %DIST_DIR% 1>&2
-  exit /b 1
-)
-
+echo ^> Copying binaries to plugin resources
 set "FOUND_DIST=false"
 for /d %%D in ("%DIST_DIR%\opencode-*") do (
   call :process_dist "%%~fD"
@@ -67,6 +64,7 @@ for /d %%D in ("%DIST_DIR%\opencode-*") do (
 
 if /I "%FOUND_DIST%"=="false" (
   echo Error: no opencode distribution folders found in %DIST_DIR% 1>&2
+  dir "%DIST_DIR%" 1>&2
   exit /b 1
 )
 
@@ -129,13 +127,15 @@ if not exist "%JETBRAINS_TARGET%" mkdir "%JETBRAINS_TARGET%"
 if not exist "%VSCODE_TARGET%" mkdir "%VSCODE_TARGET%"
 
 copy /Y "%BINARY_SRC%" "%JETBRAINS_TARGET%\%BINARY_NAME%" >nul
+if errorlevel 1 exit /b 1
 copy /Y "%BINARY_SRC%" "%VSCODE_TARGET%\%BINARY_NAME%" >nul
+if errorlevel 1 exit /b 1
+
 xcopy "%WEBGUI_DIST%" "%JETBRAINS_TARGET%\webgui-dist\" /E /I /Y >nul
 if errorlevel 1 exit /b 1
 xcopy "%WEBGUI_DIST%" "%VSCODE_TARGET%\webgui-dist\" /E /I /Y >nul
 if errorlevel 1 exit /b 1
 
-echo => Prepared binaries and webgui-dist for %OS%/%ARCH%
 set "FOUND_DIST=true"
 exit /b
 
@@ -147,4 +147,4 @@ if "%TARGET%"=="" (
 )
 if exist "%TARGET%" rd /s /q "%TARGET%"
 mkdir "%TARGET%"
-exit /b 0
+exit /b
