@@ -91,9 +91,13 @@ class OpenCodeExtension {
 
     // Initialize activity bar provider as WebviewViewProvider so the content renders directly in the view
     this.activityBarProvider = new ActivityBarProvider(this.context!, this.backendLauncher, this.settingsManager)
-    vscode.window.registerWebviewViewProvider("opencode.main", this.activityBarProvider, {
-      webviewOptions: { retainContextWhenHidden: true },
-    })
+    try {
+      vscode.window.registerWebviewViewProvider("opencode.main", this.activityBarProvider, {
+        webviewOptions: { retainContextWhenHidden: true },
+      })
+    } catch {
+      logger.appendLine("[WARN] View provider for 'opencode.main' already registered (skipping)")
+    }
 
     logger.appendLine("Core components initialized")
   }
